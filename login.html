@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HamsterHouse – Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+    .login-box {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 8px 8px 0 var(--accent);
+    }
+    .login-box h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .login-box p { color: var(--muted); margin-bottom: 28px; font-size: 0.95rem; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .form-group input {
+      width: 100%; padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color .2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus { border-color: var(--accent); }
+    .error-msg { color: #e55; font-size: 0.85rem; margin-top: 4px; display: none; }
+    .btn-login {
+      width: 100%; padding: 13px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .1s, box-shadow .1s;
+      margin-top: 8px;
+    }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+    .hint { text-align:center; margin-top:18px; font-size:.82rem; color:var(--muted); }
+    .paw { font-size: 2.4rem; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="paw">🐹</div>
+    <h1>HamsterHouse</h1>
+    <p>Faça login para continuar</p>
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="user">Usuário</label>
+        <input type="text" id="user" placeholder="Digite seu usuário" autocomplete="off"/>
+        <span class="error-msg" id="userErr">Usuário é obrigatório.</span>
+      </div>
+      <div class="form-group">
+        <label for="pass">Senha</label>
+        <input type="password" id="pass" placeholder="Digite sua senha"/>
+        <span class="error-msg" id="passErr">Senha é obrigatória.</span>
+      </div>
+      <span class="error-msg" id="authErr" style="display:none; margin-bottom:8px;">Usuário ou senha incorretos.</span>
+      <button type="submit" class="btn-login">Entrar</button>
+    </form>
+    <div class="hint">Use: <strong>adm</strong> / <strong>123</strong></div>
+  </div>
+
+  <script>
+    const USERS = { adm: '123', hamster: 'casa' };
+
+    if (localStorage.getItem('loggedIn') === 'true') {
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = document.getElementById('user').value.trim();
+      const pass = document.getElementById('pass').value.trim();
+      let valid = true;
+
+      document.getElementById('userErr').style.display = !user ? 'block' : 'none';
+      document.getElementById('passErr').style.display = !pass ? 'block' : 'none';
+      document.getElementById('authErr').style.display = 'none';
+
+      if (!user || !pass) return;
+
+      if (USERS[user] && USERS[user] === pass) {
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('currentUser', user);
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('authErr').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HamsterHouse – Contato</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<script src="auth.js"></script>
+<script>checkAuth(); renderNavbar('contato.html');</script>
+
+<div class="page-header">
+  <h1>Fale Conosco</h1>
+  <p>Estamos aqui para ajudar você e seu hamster</p>
+</div>
+
+<div class="section">
+  <div class="contact-grid">
+    <!-- FORM -->
+    <div class="form-card">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:20px;">Envie uma mensagem</h3>
+      <form id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="field" id="f_nome">
+            <label>Nome *</label>
+            <input type="text" id="nome" placeholder="Seu nome completo"/>
+            <span class="err">Nome é obrigatório (mín. 3 caracteres).</span>
+          </div>
+          <div class="field" id="f_email">
+            <label>E-mail *</label>
+            <input type="email" id="email" placeholder="seu@email.com"/>
+            <span class="err">E-mail inválido.</span>
+          </div>
+        </div>
+        <div class="field" id="f_tel">
+          <label>Telefone</label>
+          <input type="tel" id="tel" placeholder="(11) 91234-5678" maxlength="15"/>
+          <span class="err">Formato inválido. Use (XX) XXXXX-XXXX.</span>
+        </div>
+        <div class="field" id="f_assunto">
+          <label>Assunto *</label>
+          <select id="assunto">
+            <option value="">Selecione...</option>
+            <option>Dúvida sobre produto</option>
+            <option>Acompanhar pedido</option>
+            <option>Troca ou devolução</option>
+            <option>Sugestão</option>
+            <option>Outro</option>
+          </select>
+          <span class="err">Selecione um assunto.</span>
+        </div>
+        <div class="field" id="f_msg">
+          <label>Mensagem *</label>
+          <textarea id="msg" rows="5" placeholder="Descreva sua dúvida ou comentário..."></textarea>
+          <span class="err">Mensagem deve ter ao menos 10 caracteres.</span>
+        </div>
+        <button type="submit" class="btn-submit">Enviar mensagem 🐹</button>
+        <div class="success-box" id="successBox">✅ Mensagem enviada com sucesso! Respondemos em até 24h.</div>
+      </form>
+    </div>
+
+    <!-- INFO -->
+    <div>
+      <div class="form-card" style="margin-bottom:20px">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:16px;">Informações de contato</h3>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="font-size:1.5rem">📧</span>
+            <div><div style="font-weight:600;font-size:.9rem">E-mail</div><div style="color:var(--muted);font-size:.88rem">contato@hamsterhouse.com.br</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="font-size:1.5rem">📞</span>
+            <div><div style="font-weight:600;font-size:.9rem">Telefone / WhatsApp</div><div style="color:var(--muted);font-size:.88rem">(11) 91234-5678</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="font-size:1.5rem">📍</span>
+            <div><div style="font-weight:600;font-size:.9rem">Endereço</div><div style="color:var(--muted);font-size:.88rem">Rua dos Hamsters, 42 – São Paulo, SP</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="font-size:1.5rem">🕐</span>
+            <div><div style="font-weight:600;font-size:.9rem">Horário</div><div style="color:var(--muted);font-size:.88rem">Seg a Sex, 9h – 18h</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:14px;">Perguntas frequentes</h3>
+        <div id="faq"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col"><h4>🐹 HamsterHouse</h4><p>Especialistas em gaiolas para hamsters.</p></div>
+    <div class="footer-col"><h4>Links</h4><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="sobre.html">Sobre</a><a href="contato.html">Contato</a></div>
+    <div class="footer-col"><h4>Contato</h4><p>📧 contato@hamsterhouse.com.br<br>📞 (11) 91234-5678</p></div>
+  </div>
+  <div class="footer-bottom">© 2025 HamsterHouse. Todos os direitos reservados.</div>
+</footer>
+
+<style>
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 12px 0; font-size: .9rem; font-weight: 600; cursor: pointer;
+  color: var(--text); display: flex; justify-content: space-between; align-items: center;
+}
+.faq-q:hover { color: var(--accent); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s; color: var(--muted); font-size: .88rem; line-height: 1.6; }
+.faq-a.open { max-height: 200px; padding-bottom: 10px; }
+</style>
+
+<script>
+// FAQ
+const faqs = [
+  { q: 'Qual o prazo de entrega?', a: 'Entregamos em até 5 dias úteis para todo o Brasil. Regiões metropolitanas geralmente recebem em 2-3 dias.' },
+  { q: 'Posso trocar o produto?', a: 'Sim! Aceitamos trocas em até 30 dias após o recebimento, desde que o produto esteja sem uso.' },
+  { q: 'As gaiolas são seguras para hamsters?', a: 'Todos os materiais são atóxicos e certificados. Testamos cada produto antes de colocar à venda.' },
+  { q: 'Tem frete grátis?', a: 'Sim! Para compras acima de R$ 150, o frete é gratuito para todo o Brasil.' },
+];
+
+const faqEl = document.getElementById('faq');
+faqs.forEach((f, i) => {
+  faqEl.innerHTML += `
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(${i}, this)">
+        ${f.q} <span>+</span>
+      </button>
+      <div class="faq-a" id="faq${i}">${f.a}</div>
+    </div>
+  `;
+});
+function toggleFaq(i, btn) {
+  const el = document.getElementById('faq' + i);
+  const open = el.classList.toggle('open');
+  btn.querySelector('span').textContent = open ? '−' : '+';
+}
+
+// Form validation
+function setField(id, valid, customMsg) {
+  const f = document.getElementById('f_' + id);
+  f.classList.toggle('valid', valid);
+  f.classList.toggle('invalid', !valid);
+  if (!valid && customMsg) f.querySelector('.err').textContent = customMsg;
+}
+
+function validateAll() {
+  const nome = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const tel = document.getElementById('tel').value.trim();
+  const assunto = document.getElementById('assunto').value;
+  const msg = document.getElementById('msg').value.trim();
+  let ok = true;
+
+  const nomeOk = nome.length >= 3;
+  setField('nome', nomeOk); if (!nomeOk) ok = false;
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setField('email', emailOk); if (!emailOk) ok = false;
+
+  if (tel) {
+    const telOk = /^\(\d{2}\) \d{4,5}-\d{4}$/.test(tel);
+    setField('tel', telOk); if (!telOk) ok = false;
+  } else {
+    document.getElementById('f_tel').classList.remove('valid','invalid');
+  }
+
+  const assuntoOk = assunto !== '';
+  setField('assunto', assuntoOk); if (!assuntoOk) ok = false;
+
+  const msgOk = msg.length >= 10;
+  setField('msg', msgOk); if (!msgOk) ok = false;
+
+  return ok;
+}
+
+// Live validation
+['nome','email','assunto','msg'].forEach(id => {
+  document.getElementById(id).addEventListener('blur', validateAll);
+});
+
+// Phone mask
+document.getElementById('tel').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length > 7) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if (v.length > 0) v = `(${v}`;
+  this.value = v;
+});
+
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (validateAll()) {
+    this.style.display = 'none';
+    document.getElementById('successBox').style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

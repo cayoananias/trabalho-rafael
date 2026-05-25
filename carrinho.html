@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HamsterHouse – Carrinho</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .cart-grid { display: grid; grid-template-columns: 1fr 340px; gap: 32px; }
+    @media(max-width:700px){ .cart-grid{grid-template-columns:1fr;} }
+    .cart-table { width: 100%; border-collapse: collapse; }
+    .cart-table th { text-align:left; padding: 10px 14px; border-bottom: 2px solid var(--border); font-size:.85rem; color:var(--muted); }
+    .cart-table td { padding: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .qty-ctrl { display:flex; align-items:center; gap:8px; }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 2px solid var(--border); background: var(--card);
+      color: var(--text); font-size: 1rem; cursor: pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition: background .15s;
+    }
+    .qty-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .remove-btn { background:none; border:none; color:#e55; cursor:pointer; font-size:1.2rem; }
+    .order-box { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:28px; height:fit-content; }
+    .order-row { display:flex; justify-content:space-between; margin-bottom:12px; font-size:.92rem; }
+    .order-total { font-weight:800; font-size:1.1rem; padding-top:12px; border-top:2px solid var(--border); margin-top:4px; }
+    .empty-cart { text-align:center; padding:60px 20px; color:var(--muted); }
+    .empty-cart div { font-size:4rem; margin-bottom:16px; }
+    .coupon-row { display:flex; gap:8px; margin-bottom:16px; }
+    .coupon-input { flex:1; padding:9px 12px; border:2px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); font-size:.9rem; outline:none; }
+    .coupon-input:focus { border-color:var(--accent); }
+    .coupon-btn { padding:9px 14px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:.9rem; }
+  </style>
+</head>
+<body>
+<script src="auth.js"></script>
+<script>checkAuth(); renderNavbar('carrinho.html');</script>
+
+<div class="page-header">
+  <h1>🛒 Carrinho</h1>
+  <p>Revise seus itens antes de finalizar</p>
+</div>
+
+<div class="section">
+  <div id="emptyCart" class="empty-cart" style="display:none">
+    <div>🐹</div>
+    <h3>Seu carrinho está vazio</h3>
+    <p style="margin:10px 0 20px">Que tal dar uma olhada nos nossos produtos?</p>
+    <a href="produtos.html" style="display:inline-block;background:var(--accent);color:#fff;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700;">Ver produtos →</a>
+  </div>
+
+  <div class="cart-grid" id="cartContent">
+    <div>
+      <div class="form-card" style="padding:0;overflow:hidden;">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Preço unit.</th>
+              <th>Qtd.</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cartBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="order-box">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:20px;">Resumo do pedido</h3>
+        <div class="coupon-row">
+          <input class="coupon-input" type="text" id="couponInput" placeholder="Cupom de desconto"/>
+          <button class="coupon-btn" onclick="applyCoupon()">OK</button>
+        </div>
+        <div id="couponMsg" style="font-size:.82rem;margin-bottom:10px;display:none"></div>
+        <div class="order-row"><span>Subtotal</span><span id="subtotalEl">R$ 0,00</span></div>
+        <div class="order-row"><span>Desconto</span><span id="discountEl" style="color:#3a3">R$ 0,00</span></div>
+        <div class="order-row"><span>Frete</span><span id="freteEl">R$ 0,00</span></div>
+        <div class="order-row order-total"><span>Total</span><span id="totalEl">R$ 0,00</span></div>
+        <button class="btn-submit" style="margin-top:20px" onclick="finalizarPedido()">Finalizar pedido →</button>
+        <div id="successOrder" style="display:none;text-align:center;padding:20px;color:#1a5c2a">
+          <div style="font-size:2.5rem">🎉</div>
+          <strong>Pedido realizado!</strong><br>
+          <span style="font-size:.88rem;color:var(--muted)">Você receberá um e-mail de confirmação em breve.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col"><h4>🐹 HamsterHouse</h4><p>Especialistas em gaiolas para hamsters.</p></div>
+    <div class="footer-col"><h4>Links</h4><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="sobre.html">Sobre</a><a href="contato.html">Contato</a></div>
+    <div class="footer-col"><h4>Contato</h4><p>📧 contato@hamsterhouse.com.br<br>📞 (11) 91234-5678</p></div>
+  </div>
+  <div class="footer-bottom">© 2025 HamsterHouse. Todos os direitos reservados.</div>
+</footer>
+
+<script>
+let discount = 0;
+const COUPONS = { 'HAMSTER10': 0.10, 'CASA20': 0.20 };
+
+function getCart() { return JSON.parse(localStorage.getItem('cart') || '[]'); }
+function saveCart(c) { localStorage.setItem('cart', JSON.stringify(c)); }
+
+function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+
+function render() {
+  const cart = getCart();
+  const body = document.getElementById('cartBody');
+
+  if (cart.length === 0) {
+    document.getElementById('emptyCart').style.display = 'block';
+    document.getElementById('cartContent').style.display = 'none';
+    return;
+  }
+  document.getElementById('emptyCart').style.display = 'none';
+  document.getElementById('cartContent').style.display = 'grid';
+
+  body.innerHTML = cart.map((item, i) => `
+    <tr>
+      <td><strong>${item.name}</strong></td>
+      <td>${fmt(item.price)}</td>
+      <td>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${i}, -1)">−</button>
+          <span>${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
+        </div>
+      </td>
+      <td><strong>${fmt(item.price * item.qty)}</strong></td>
+      <td><button class="remove-btn" onclick="removeItem(${i})">🗑</button></td>
+    </tr>
+  `).join('');
+
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const disc = subtotal * discount;
+  const frete = subtotal - disc >= 150 ? 0 : 19.90;
+  const total = subtotal - disc + frete;
+
+  document.getElementById('subtotalEl').textContent = fmt(subtotal);
+  document.getElementById('discountEl').textContent = '−' + fmt(disc);
+  document.getElementById('freteEl').textContent = frete === 0 ? 'Grátis 🎉' : fmt(frete);
+  document.getElementById('totalEl').textContent = fmt(total);
+}
+
+function changeQty(i, delta) {
+  const cart = getCart();
+  cart[i].qty += delta;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  saveCart(cart);
+  render();
+}
+
+function removeItem(i) {
+  const cart = getCart();
+  cart.splice(i, 1);
+  saveCart(cart);
+  render();
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const msgEl = document.getElementById('couponMsg');
+  msgEl.style.display = 'block';
+  if (COUPONS[code]) {
+    discount = COUPONS[code];
+    msgEl.style.color = '#2a7a3a';
+    msgEl.textContent = `✅ Cupom "${code}" aplicado! ${discount * 100}% de desconto.`;
+  } else {
+    discount = 0;
+    msgEl.style.color = '#e55';
+    msgEl.textContent = '❌ Cupom inválido.';
+  }
+  render();
+}
+
+function finalizarPedido() {
+  const cart = getCart();
+  if (cart.length === 0) return;
+  localStorage.removeItem('cart');
+  document.getElementById('cartBody').innerHTML = '';
+  document.querySelector('.order-box').querySelector('button').style.display = 'none';
+  document.getElementById('successOrder').style.display = 'block';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
