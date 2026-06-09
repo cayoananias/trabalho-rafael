@@ -1,0 +1,125 @@
+# ========================
+# Dependências
+# ========================
+node_modules/
+vendor/
+.pnp/
+.pnp.js
+
+# ========================
+# Build / Output
+# ========================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+*.min.js
+*.min.css
+
+# ========================
+# Variáveis de Ambiente
+# ========================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ========================
+# Cache
+# ========================
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.turbo/
+
+# ========================
+# IDEs e Editores
+# ========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ========================
+# Testes e Cobertura
+# ========================
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# ========================
+# PHP / Laravel
+# ========================
+/public/hot
+/public/storage
+/storage/*.key
+bootstrap/cache/
+Homestead.json
+Homestead.yaml
+
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+*.pyc
+
+# ========================
+# Flutter / Dart
+# ========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+
+# ========================
+# Android / iOS
+# ========================
+*.apk
+*.ipa
+*.keystore
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# ========================
+# Arquivos Temporários
+# ========================
+*.tmp
+*.temp
+*.bak
+*.orig
+*.DS_Store
