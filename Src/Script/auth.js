@@ -2,24 +2,27 @@
 
 function checkAuth() {
   if (localStorage.getItem('loggedIn') !== 'true') {
-    window.location.href = 'login.html';
+    const base = window.location.pathname.includes('/Src/') ? '' : 'Src/';
+    window.location.href = base + 'login.html';
   }
 }
 
 function logout() {
   localStorage.removeItem('loggedIn');
   localStorage.removeItem('currentUser');
-  window.location.href = 'login.html';
+  const base = window.location.pathname.includes('/Src/') ? '' : 'Src/';
+  window.location.href = base + 'login.html';
 }
 
 function renderNavbar(activePage) {
   const user = localStorage.getItem('currentUser') || 'adm';
+  const base = window.location.pathname.includes('/Src/') ? '' : 'Src/';
   const links = [
-    { href: 'index.html', label: 'Início' },
-    { href: 'produtos.html', label: 'Produtos' },
-    { href: 'sobre.html', label: 'Sobre' },
-    { href: 'contato.html', label: 'Contato' },
-    { href: 'carrinho.html', label: '🛒 Carrinho' },
+    { href: base + 'index.html', label: 'Início' },
+    { href: base + 'produtos.html', label: 'Produtos' },
+    { href: base + 'sobre.html', label: 'Sobre' },
+    { href: base + 'contato.html', label: 'Contato' },
+    { href: base + 'carrinho.html', label: '🛒 Carrinho' },
   ];
 
   const navLinks = links.map(l =>
@@ -31,7 +34,7 @@ function renderNavbar(activePage) {
 
   document.body.insertAdjacentHTML('afterbegin', `
     <header class="navbar">
-      <a href="index.html" class="brand">🐹 HamsterHouse</a>
+      <a href="${base}index.html" class="brand">🐹 HamsterHouse</a>
       <nav>${navLinks}</nav>
       <div class="navbar-right">
         <button class="btn-dark" id="darkToggle" title="Alternar tema">${isDark ? '☀️' : '🌙'}</button>
